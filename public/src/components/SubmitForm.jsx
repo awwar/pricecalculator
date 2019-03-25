@@ -87,8 +87,9 @@ class SubmitForm extends Component {
                     (result) => this.showAlert("success", [result.notifi]),
                     (error) => this.showAlert("warning", [error.notifi]),
                 )
+        } else {
+            this.showAlert(type, msg);
         }
-        this.showAlert(type, msg)
 
 
     }
