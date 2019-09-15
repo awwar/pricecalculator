@@ -50,7 +50,13 @@ class Main extends Component {
         fetch("http://priceclaculate/calculation.php")
             .then(res => res.json())
             .then(
-                (result) => this.datasset(result),
+                (result) => {
+                    try {                        
+                        this.datasset(result);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                },
                 (error) => console.log(error)
             )
     }

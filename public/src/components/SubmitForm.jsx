@@ -81,6 +81,7 @@ class SubmitForm extends Component {
 
 
             })
+                .then(this.showAlert("success", ["Just wait..."]))
                 .then(res => res.json())
                 .then(
                     (result) => this.showAlert("success", [result.notifi]),
@@ -118,7 +119,7 @@ class SubmitForm extends Component {
                         key="NameInput"
                         type="text"
                         name="Name"
-                        onChange={(ev) => { this.state.name = ev.target.value }}
+                        onChange={(ev) => this.setState({ name: ev.target.value })}
                         className="form-control"
                         placeholder="Имя" />
                 </div>
@@ -127,7 +128,7 @@ class SubmitForm extends Component {
                         key="EmailInput"
                         type="email"
                         name="Email"
-                        onChange={(ev) => { this.state.email = ev.target.value }}
+                        onChange={(ev) => this.setState({ email: ev.target.value })}
                         className="form-control"
                         aria-describedby="emailHelp"
                         placeholder="Почта" />
@@ -137,7 +138,7 @@ class SubmitForm extends Component {
                         key="PhoneInput"
                         type="phone"
                         name="Phone"
-                        onChange={(ev) => { this.state.phone = ev.target.value }}
+                        onChange={(ev) => this.setState({ phone: ev.target.value })}
                         className="form-control"
                         placeholder="Номер телефона" />
                 </div>
