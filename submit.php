@@ -4,14 +4,16 @@ require_once "include/includs.php";
 
 $form = json_decode($_POST['form']);
 $data = (array)json_decode($_POST['data']);
-validate($form);
-$service = selectFeature($data);
-sendMail($form, $service);
+
+validateForm($form);
+$service = validateInputServices($data);
+$feature = selectFeature($service);
+sendMail($form, $feature);
 
 function fillData($data)
 {
     foreach ($data as $key => $value) {
-        $message .= "<tr style='background: #82b7f5;'><td><strong>$value->name</strong> </td><td>Цена: $value->price$value->addition Описание: $value->description</td></tr>";
+        $message .= "<tr style='background: #82b7f5;'><td><strong>$value->name</strong> </td><td>Цена: $value->price $value->addition Описание: $value->description</td></tr>";
     }
     return $message;
 }
@@ -39,10 +41,9 @@ function sendMail($form, $data)
     success("Мы приняли сообщение к рассмотрению!");
 }
 
-function selectFeature($data)
+function selectFeature($servids)
 {
     $service = [];
-    $servids = [];
     $basesql = "
         SELECT feature.feature_id,feature.description,feature.price,price_type.addition,service.name,prod_step.prod_step_name FROM feature
         JOIN price_type
@@ -55,19 +56,6 @@ function selectFeature($data)
         ON service.fk_prod_step_id = prod_step.prod_step_id
         ORDER BY prod_step_id
     ";
-    $i = 0;
-    foreach ($data as $key => $value) {
-        $int = preg_replace("/service-(\d.*)/", "$1", $key);
-        if($int == 0){
-            continue;
-        }
-        $i++;
-        $servids []= (int)$int;
-    }
-
-    if($i == 0){
-        error('Вы ничего не выбрали');
-    }
 
     $rez = query($basesql);
 
@@ -79,22 +67,41 @@ function selectFeature($data)
     return $service;
 }
 
-function validate($form){
+function validateInputServices($data)
+{
+    $i = 0;
+    $servids = [];
+    foreach ($data as $key => $value) {
+        $int = preg_replace("/service-(\d.*)/", "$1", $key);
+        if ($int == 0) {
+            continue;
+        }
+        $i++;
+        $servids []= (int)$int;
+    }
+
+    if ($i == 0) {
+        error('Вы ничего не выбрали');
+    }
+    return $servids;
+}
+
+function validateForm($form)
+{
     $form = (array)$form;
-    if(empty($form)){
-        error("Вы ввели не все данные",["Name","Email","Phone"]);
+    if (empty($form)) {
+        error("Вы ввели не все данные", ["Name","Email","Phone"]);
     }
 
     $errors = array_diff_key(["Name" => 0,"Email" => 0,"Phone" => 0], $form);
     
     foreach ($form as $key => $value) {
-
-        if(mb_strlen($value) < 4){
+        if (mb_strlen($value) < 4) {
             $errors[] = $key;
         }
     }
 
-    if(!empty($errors)){
+    if (!empty($errors)) {
         error("Вы ввели не все данные", $errors);
     }
 }

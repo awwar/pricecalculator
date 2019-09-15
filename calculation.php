@@ -1,9 +1,7 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 require_once "include/includs.php";
-$workstep = [];
-$output = [];
-# feature.feature_id,feature.description,feature.price,price_type.addition,work_type.work_type_name,prod_step.prod_step_name
+
 function selectPrices()
 {
     $workstep = [];
@@ -21,7 +19,10 @@ function selectPrices()
     ";
     $rez = query($basesql);
     foreach ($rez as $key => $value) {
-        $workstep[$value["work_type_name"]]["cards"][$value["prod_step_name"]][$value["name"]][] = $value;
+        $type = $value["work_type_name"];
+        $step = $value["prod_step_name"];
+        $name = $value["name"];
+        $workstep[$type]["cards"][$step][$name][] = $value;
     }
     return $workstep;
 }
@@ -35,10 +36,11 @@ function selectTaxes($workstep)
     ";
     $rez = query($basesql);
     foreach ($rez as $key => $value) {
-        $workstep[$value["work_type_name"]]["taxes"][] = $value['taxes_coste'];
+        $type = $value["work_type_name"];
+        $workstep[$type]["taxes"] []= $value['taxes_coste'];
     }
     return $workstep;
 }
 $output = selectPrices();
 $output = selectTaxes($output);
-die(json_encode($output,JSON_NUMERIC_CHECK));
+die(json_encode($output, JSON_NUMERIC_CHECK));
