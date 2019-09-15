@@ -11,7 +11,6 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
     ...state,
-    isshow: state.formState.formId,
     inputData: state.formState.inputData,
     formId: state.formState.formId
 });
@@ -58,7 +57,7 @@ class SubmitForm extends Component {
         }
 
         var outForm = {}
-       
+
 
         for (var key in inputForm) {
             var value = inputForm[key];
@@ -72,15 +71,15 @@ class SubmitForm extends Component {
         if (msg.length === 0) {
             fetch('http://priceclaculate/submit.php', {
                 method: 'POST',
-                headers: {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'},
-                body: 
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                body:
                     `form=${JSON.stringify({
                         Email: data.email,
                         Name: data.name,
                         Phone: data.phone
                     })}&data=${JSON.stringify(outForm)}`
-                   
-                
+
+
             })
                 .then(res => res.json())
                 .then(
@@ -107,14 +106,16 @@ class SubmitForm extends Component {
     render() {
         return ([
 
-            <Alert 
+            <Alert
+                key="0"
                 type={this.state.msg.type}
-                show={this.state.msg.show}     
-                message={this.state.msg.message}       
+                show={this.state.msg.show}
+                message={this.state.msg.message}
             />,
             <form method="post" id="submitform">
                 <div className="form-group">
                     <input
+                        key="NameInput"
                         type="text"
                         name="Name"
                         onChange={(ev) => { this.state.name = ev.target.value }}
@@ -123,6 +124,7 @@ class SubmitForm extends Component {
                 </div>
                 <div className="form-group">
                     <input
+                        key="EmailInput"
                         type="email"
                         name="Email"
                         onChange={(ev) => { this.state.email = ev.target.value }}
@@ -132,13 +134,14 @@ class SubmitForm extends Component {
                 </div>
                 <div className="form-group">
                     <input
+                        key="PhoneInput"
                         type="phone"
                         name="Phone"
                         onChange={(ev) => { this.state.phone = ev.target.value }}
                         className="form-control"
                         placeholder="Номер телефона" />
                 </div>
-                <button type="submit" onClick={this.submitForm.bind(this)} className="btn btn-primary">Отправить</button>
+                <button key="SubmitInput" type="submit" onClick={this.submitForm.bind(this)} className="btn btn-primary">Отправить</button>
             </form>
         ])
     }
